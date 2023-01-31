@@ -26,17 +26,7 @@ import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
 import androidx.health.connect.client.changes.Change
 import androidx.health.connect.client.permission.HealthPermission
-import androidx.health.connect.client.records.DistanceRecord
-import androidx.health.connect.client.records.ExerciseEventRecord
-import androidx.health.connect.client.records.ExerciseSessionRecord
-import androidx.health.connect.client.records.HeartRateRecord
-import androidx.health.connect.client.records.Record
-import androidx.health.connect.client.records.SleepSessionRecord
-import androidx.health.connect.client.records.SleepStageRecord
-import androidx.health.connect.client.records.SpeedRecord
-import androidx.health.connect.client.records.StepsRecord
-import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
-import androidx.health.connect.client.records.WeightRecord
+import androidx.health.connect.client.records.*
 import androidx.health.connect.client.records.metadata.DataOrigin
 import androidx.health.connect.client.request.AggregateRequest
 import androidx.health.connect.client.request.ChangesTokenRequest
@@ -315,8 +305,8 @@ class HealthConnectManager(private val context: Context) {
      */
     suspend fun readSleepSessions(): List<SleepSessionData> {
         val lastDay = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS)
-            .minusDays(1)
-            .withHour(12)
+//            .minusDays(1)
+//            .withHour(12)
         val firstDay = lastDay
             .minusDays(7)
 
@@ -370,6 +360,18 @@ class HealthConnectManager(private val context: Context) {
     suspend fun readWeightInputs(start: Instant, end: Instant): List<WeightRecord> {
         val request = ReadRecordsRequest(
             recordType = WeightRecord::class,
+            timeRangeFilter = TimeRangeFilter.between(start, end)
+        )
+        val response = healthConnectClient.readRecords(request)
+        return response.records
+    }
+
+    /**
+     * Reads in existing [BloodPressureRecord]s.
+     */
+    suspend fun readBloodPressureRecords(start: Instant, end: Instant): List<BloodPressureRecord> {
+        val request = ReadRecordsRequest(
+            recordType = BloodPressureRecord::class,
             timeRangeFilter = TimeRangeFilter.between(start, end)
         )
         val response = healthConnectClient.readRecords(request)

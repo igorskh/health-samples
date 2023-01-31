@@ -130,6 +130,8 @@
     <string name="differential_changes_type_distance">Distance</string>
     <string name="differential_changes_type_weight">Weight</string>
 
+    <string name="blood_pressure_readings">Blood Pressure Readings</string>
+
     <!-- Health Connect settings -->
     <string name="settings">Settings</string>
 </resources>

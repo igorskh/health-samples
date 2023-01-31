@@ -27,6 +27,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import com.example.healthconnectsample.data.HealthConnectManager
 import com.example.healthconnectsample.presentation.screen.WelcomeScreen
+import com.example.healthconnectsample.presentation.screen.bloodpressure.BloodPressureScreen
+import com.example.healthconnectsample.presentation.screen.bloodpressure.BloodPressureViewModel
+import com.example.healthconnectsample.presentation.screen.bloodpressure.BloodPressureViewModelFactory
 import com.example.healthconnectsample.presentation.screen.changes.DifferentialChangesScreen
 import com.example.healthconnectsample.presentation.screen.changes.DifferentialChangesViewModel
 import com.example.healthconnectsample.presentation.screen.changes.DifferentialChangesViewModelFactory
@@ -199,6 +202,36 @@ fun HealthConnectNavigation(
                 onDeleteClick = { uid ->
                     viewModel.deleteWeightInput(uid)
                 },
+                readingsList = readingsList,
+                onError = { exception ->
+                    showExceptionSnackbar(scaffoldState, scope, exception)
+                },
+                onPermissionsResult = {
+                    viewModel.initialLoad()
+                },
+                onPermissionsLaunch = { values ->
+                    permissionsLauncher.launch(values)}
+            )
+        }
+
+        composable(Screen.BloodPressureReadings.route) {
+            val viewModel: BloodPressureViewModel = viewModel(
+                factory = BloodPressureViewModelFactory(
+                    healthConnectManager = healthConnectManager
+                )
+            )
+            val permissionsGranted by viewModel.permissionsGranted
+            val readingsList by viewModel.readingsList
+            val permissions = viewModel.permissions
+            val onPermissionsResult = {viewModel.initialLoad()}
+            val permissionsLauncher =
+                rememberLauncherForActivityResult(viewModel.permissionsLauncher) {
+                    onPermissionsResult()}
+            BloodPressureScreen(
+                permissionsGranted = permissionsGranted,
+                permissions = permissions,
+
+                uiState = viewModel.uiState,
                 readingsList = readingsList,
                 onError = { exception ->
                     showExceptionSnackbar(scaffoldState, scope, exception)
