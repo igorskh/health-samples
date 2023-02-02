@@ -226,7 +226,8 @@ fun HealthConnectNavigation(
             val onPermissionsResult = {viewModel.initialLoad()}
             val permissionsLauncher =
                 rememberLauncherForActivityResult(viewModel.permissionsLauncher) {
-                    onPermissionsResult()}
+                    onPermissionsResult()
+                }
             BloodPressureScreen(
                 permissionsGranted = permissionsGranted,
                 permissions = permissions,

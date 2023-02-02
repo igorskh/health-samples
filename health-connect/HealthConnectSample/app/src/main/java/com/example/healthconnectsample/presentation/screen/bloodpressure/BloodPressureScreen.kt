@@ -10,12 +10,16 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.health.connect.client.permission.HealthPermission
 import com.example.healthconnectsample.data.BloodPressureData
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import com.madrapps.plot.line.DataPoint
+import com.madrapps.plot.line.LineGraph
+import com.madrapps.plot.line.LinePlot
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.*
@@ -25,13 +29,13 @@ import java.util.*
  */
 @Composable
 fun BloodPressureScreen(
-    permissions: Set<HealthPermission>,
+    permissions: Set<String>,
     permissionsGranted: Boolean,
     readingsList: List<BloodPressureData>,
     uiState: BloodPressureViewModel.UiState,
     onError: (Throwable?) -> Unit = {},
     onPermissionsResult: () -> Unit = {},
-    onPermissionsLaunch: (Set<HealthPermission>) -> Unit = {}
+    onPermissionsLaunch: (Set<String>) -> Unit = {}
 ) {
     // Remember the last error ID, such that it is possible to avoid re-launching the error
     // notification for the same error when the screen is recomposed, or configuration changes etc.
@@ -93,6 +97,24 @@ fun BloodPressureScreen(
                         )
                         Text(text = formatter.format(reading.time))
                     }
+                }
+                item {
+                    LineGraph(
+                        plot = LinePlot(
+                            listOf(
+                                LinePlot.Line(
+                                    listOf(DataPoint(x= 1.0F, y= 1.0F), DataPoint(x= 2.0F, y= 2.0F)),
+                                    LinePlot.Connection(color = Color.Red),
+                                    LinePlot.Intersection(color = Color.Red),
+                                    LinePlot.Highlight(color = Color.Yellow),
+                                )
+                            ),
+                            grid = LinePlot.Grid(Color.Gray, steps = 4),
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                    )
                 }
             }
         }

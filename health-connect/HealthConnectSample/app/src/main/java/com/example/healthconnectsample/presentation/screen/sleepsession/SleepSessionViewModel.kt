@@ -36,10 +36,10 @@ class SleepSessionViewModel(private val healthConnectManager: HealthConnectManag
     ViewModel() {
 
     val permissions = setOf(
-        HealthPermission.createReadPermission(SleepSessionRecord::class),
-        HealthPermission.createWritePermission(SleepSessionRecord::class),
-        HealthPermission.createReadPermission(SleepStageRecord::class),
-        HealthPermission.createWritePermission(SleepStageRecord::class)
+        HealthPermission.createReadPermissionLegacy(SleepSessionRecord::class),
+        HealthPermission.createWritePermissionLegacy(SleepSessionRecord::class),
+        HealthPermission.createReadPermissionLegacy(SleepStageRecord::class),
+        HealthPermission.createWritePermissionLegacy(SleepStageRecord::class)
     )
 
     var permissionsGranted = mutableStateOf(false)
@@ -51,7 +51,7 @@ class SleepSessionViewModel(private val healthConnectManager: HealthConnectManag
     var uiState: UiState by mutableStateOf(UiState.Uninitialized)
         private set
 
-    val permissionsLauncher = healthConnectManager.requestPermissionsActivityContract()
+    val permissionsLauncher = healthConnectManager.requestPermissionsActivityContractLegacy()
 
     fun initialLoad() {
         viewModelScope.launch {
@@ -83,7 +83,7 @@ class SleepSessionViewModel(private val healthConnectManager: HealthConnectManag
      * [UiState.Error], which results in the snackbar being used to show the error message.
      */
     private suspend fun tryWithPermissionsCheck(block: suspend () -> Unit) {
-        permissionsGranted.value = healthConnectManager.hasAllPermissions(permissions)
+        permissionsGranted.value = healthConnectManager.hasAllPermissionsLegacy(permissions)
         uiState = try {
             if (permissionsGranted.value) {
                 block()

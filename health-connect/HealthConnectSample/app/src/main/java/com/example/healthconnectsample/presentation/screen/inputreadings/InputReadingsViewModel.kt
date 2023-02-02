@@ -21,8 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.health.connect.client.permission.HealthPermission
-import androidx.health.connect.client.records.BloodGlucoseRecord
-import androidx.health.connect.client.records.BloodPressureRecord
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.units.Mass
 import androidx.lifecycle.ViewModel
@@ -43,8 +41,8 @@ class InputReadingsViewModel(private val healthConnectManager: HealthConnectMana
     private val healthConnectCompatibleApps = healthConnectManager.healthConnectCompatibleApps
 
     val permissions = setOf(
-        HealthPermission.createReadPermission(WeightRecord::class),
-        HealthPermission.createWritePermission(WeightRecord::class)
+        HealthPermission.createReadPermissionLegacy(WeightRecord::class),
+        HealthPermission.createWritePermissionLegacy(WeightRecord::class)
     )
     var weeklyAvg: MutableState<Mass?> = mutableStateOf(Mass.kilograms(0.0))
         private set
@@ -58,7 +56,7 @@ class InputReadingsViewModel(private val healthConnectManager: HealthConnectMana
     var uiState: UiState by mutableStateOf(UiState.Uninitialized)
         private set
 
-    val permissionsLauncher = healthConnectManager.requestPermissionsActivityContract()
+    val permissionsLauncher = healthConnectManager.requestPermissionsActivityContractLegacy()
 
     fun initialLoad() {
         viewModelScope.launch {
@@ -122,7 +120,7 @@ class InputReadingsViewModel(private val healthConnectManager: HealthConnectMana
      * [UiState.Error], which results in the snackbar being used to show the error message.
      */
     private suspend fun tryWithPermissionsCheck(block: suspend () -> Unit) {
-        permissionsGranted.value = healthConnectManager.hasAllPermissions(permissions)
+        permissionsGranted.value = healthConnectManager.hasAllPermissionsLegacy(permissions)
         uiState = try {
             if (permissionsGranted.value) {
                 block()

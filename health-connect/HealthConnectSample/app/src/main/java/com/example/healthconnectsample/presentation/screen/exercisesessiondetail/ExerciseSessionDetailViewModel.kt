@@ -40,11 +40,11 @@ class ExerciseSessionDetailViewModel(
     private val healthConnectManager: HealthConnectManager
 ) : ViewModel() {
     val permissions = setOf(
-        HealthPermission.createReadPermission(StepsRecord::class),
-        HealthPermission.createReadPermission(DistanceRecord::class),
-        HealthPermission.createReadPermission(SpeedRecord::class),
-        HealthPermission.createReadPermission(TotalCaloriesBurnedRecord::class),
-        HealthPermission.createReadPermission(HeartRateRecord::class)
+        HealthPermission.createReadPermissionLegacy(StepsRecord::class),
+        HealthPermission.createReadPermissionLegacy(DistanceRecord::class),
+        HealthPermission.createReadPermissionLegacy(SpeedRecord::class),
+        HealthPermission.createReadPermissionLegacy(TotalCaloriesBurnedRecord::class),
+        HealthPermission.createReadPermissionLegacy(HeartRateRecord::class)
     )
 
     var permissionsGranted = mutableStateOf(false)
@@ -56,7 +56,7 @@ class ExerciseSessionDetailViewModel(
     var uiState: UiState by mutableStateOf(UiState.Uninitialized)
         private set
 
-    val permissionsLauncher = healthConnectManager.requestPermissionsActivityContract()
+    val permissionsLauncher = healthConnectManager.requestPermissionsActivityContractLegacy()
 
     fun initialLoad() {
         readAssociatedSessionData()
@@ -81,7 +81,7 @@ class ExerciseSessionDetailViewModel(
      * [UiState.Error], which results in the snackbar being used to show the error message.
      */
     private suspend fun tryWithPermissionsCheck(block: suspend () -> Unit) {
-        permissionsGranted.value = healthConnectManager.hasAllPermissions(permissions)
+        permissionsGranted.value = healthConnectManager.hasAllPermissionsLegacy(permissions)
         uiState = try {
             if (permissionsGranted.value) {
                 block()

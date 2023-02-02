@@ -22,7 +22,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.DistanceRecord
-import androidx.health.connect.client.records.ExerciseEventRecord
 import androidx.health.connect.client.records.ExerciseSessionRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.SpeedRecord
@@ -48,14 +47,13 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
     private val healthConnectCompatibleApps = healthConnectManager.healthConnectCompatibleApps
 
     val permissions = setOf(
-        HealthPermission.createWritePermission(ExerciseSessionRecord::class),
-        HealthPermission.createReadPermission(ExerciseSessionRecord::class),
-        HealthPermission.createWritePermission(ExerciseEventRecord::class),
-        HealthPermission.createWritePermission(StepsRecord::class),
-        HealthPermission.createWritePermission(SpeedRecord::class),
-        HealthPermission.createWritePermission(DistanceRecord::class),
-        HealthPermission.createWritePermission(TotalCaloriesBurnedRecord::class),
-        HealthPermission.createWritePermission(HeartRateRecord::class)
+        HealthPermission.createWritePermissionLegacy(ExerciseSessionRecord::class),
+        HealthPermission.createReadPermissionLegacy(ExerciseSessionRecord::class),
+        HealthPermission.createWritePermissionLegacy(StepsRecord::class),
+        HealthPermission.createWritePermissionLegacy(SpeedRecord::class),
+        HealthPermission.createWritePermissionLegacy(DistanceRecord::class),
+        HealthPermission.createWritePermissionLegacy(TotalCaloriesBurnedRecord::class),
+        HealthPermission.createWritePermissionLegacy(HeartRateRecord::class)
     )
 
     var permissionsGranted = mutableStateOf(false)
@@ -67,7 +65,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
     var uiState: UiState by mutableStateOf(UiState.Uninitialized)
         private set
 
-    val permissionsLauncher = healthConnectManager.requestPermissionsActivityContract()
+    val permissionsLauncher = healthConnectManager.requestPermissionsActivityContractLegacy()
 
     fun initialLoad() {
         viewModelScope.launch {
@@ -134,7 +132,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
      * [UiState.Error], which results in the snackbar being used to show the error message.
      */
     private suspend fun tryWithPermissionsCheck(block: suspend () -> Unit) {
-        permissionsGranted.value = healthConnectManager.hasAllPermissions(permissions)
+        permissionsGranted.value = healthConnectManager.hasAllPermissionsLegacy(permissions)
         uiState = try {
             if (permissionsGranted.value) {
                 block()

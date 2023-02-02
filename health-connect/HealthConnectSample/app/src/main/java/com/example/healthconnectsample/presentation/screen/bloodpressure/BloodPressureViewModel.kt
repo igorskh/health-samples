@@ -23,7 +23,7 @@ class BloodPressureViewModel(private val healthConnectManager: HealthConnectMana
     private val healthConnectCompatibleApps = healthConnectManager.healthConnectCompatibleApps
 
     val permissions = setOf(
-        HealthPermission.createReadPermission(BloodPressureRecord::class)
+        HealthPermission.getReadPermission(BloodPressureRecord::class)
     )
 
     var permissionsGranted = mutableStateOf(false)
